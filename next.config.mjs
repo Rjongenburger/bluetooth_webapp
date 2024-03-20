@@ -3,7 +3,7 @@
 const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig = {
-  assetPrefix: isProd ? "/ble" : undefined,
+  assetPrefix: isProd ? "/ble" : "/ble",
 };
 
 export default nextConfig;
