@@ -53,7 +53,7 @@ function RequestDevice({
   const getDevices = () => {
     navigator.bluetooth
       .requestDevice({
-        optionalServices: undefined,
+        optionalServices: [],
         acceptAllDevices: true,
       })
       .then((device) => {
