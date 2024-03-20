@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "Webapp Bluetooth Tester",
       script: "npm",
-      args: "start",
+      args: "start -- --port 4000",
     },
   ],
 };
