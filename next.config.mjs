@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: "./",
+  assetPrefix: "https://general.lmesh.nl",
 };
 
 export default nextConfig;
