@@ -1,13 +1,10 @@
 "use client";
 
-import { log } from "console";
-import Image from "next/image";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DeviceInfo } from "./deviceinfo";
 
 export default function Home() {
   const [device, setDevice] = useState(null as BluetoothDevice | null);
-  const [serviceUUID, setServiceUUID] = useState(null as string | null);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
       <div className="z-10 max-w-5xl w-full items-start justify-between font-sans text-sm lg:flex flex-col">
@@ -15,7 +12,6 @@ export default function Home() {
         <Availability />
         {device && <DeviceInfo device={device} />}
         <RequestDevice
-          serviceUUID={serviceUUID}
           onDevicePaired={(device) => {
             setDevice(device);
           }}
@@ -27,43 +23,29 @@ export default function Home() {
   );
 }
 
-function ServiceUUIDInput({
-  onSearchChange,
-}: {
-  onSearchChange: (searchValue: string) => void;
-}) {
-  return (
-    <div>
-      <input
-        placeholder="Enter service UUID"
-        onChange={(e) => {
-          onSearchChange(e.target.value);
-        }}
-      />
-    </div>
-  );
-}
-
 function Availability() {
   const [availability, setAvailability] = useState("Loading....");
   useEffect(() => {
-    navigator.bluetooth.getAvailability().then((available: boolean) => {
-      if (available) {
-        setAvailability("This device supports Bluetooth!");
-      } else {
-        setAvailability("Bluetooth is not supported");
-      }
-    });
+    navigator.bluetooth
+      .getAvailability()
+      .then((available: boolean) => {
+        if (available) {
+          setAvailability("This device supports Bluetooth!");
+        } else {
+          setAvailability("Bluetooth is not supported");
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }, []);
 
   return <p>{availability}</p>;
 }
 
 function RequestDevice({
-  serviceUUID,
   onDevicePaired,
 }: {
-  serviceUUID: string | null;
   onDevicePaired: (device: BluetoothDevice) => void;
 }) {
   const [failedToPair, setFailedToPair] = useState(false);
@@ -71,7 +53,7 @@ function RequestDevice({
   const getDevices = () => {
     navigator.bluetooth
       .requestDevice({
-        optionalServices: serviceUUID != null ? [serviceUUID] : undefined,
+        optionalServices: undefined,
         acceptAllDevices: true,
       })
       .then((device) => {
